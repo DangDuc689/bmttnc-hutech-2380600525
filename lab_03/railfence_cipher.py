@@ -9,11 +9,17 @@ class MyApp(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        # Set parent window for message boxes
+        self.ui.set_parent_window(self)
 
         self.ui.btn_encrypt.clicked.connect(self.call_api_encrypt)
         self.ui.btn_decrypt.clicked.connect(self.call_api_decrypt)
 
     def call_api_encrypt(self):
+        # Validate input first
+        if not self.ui.validate_encrypt():
+            return
+            
         url = "http://127.0.0.1:5000/api/railfence/encrypt"
 
         payload = {
@@ -44,12 +50,30 @@ class MyApp(QMainWindow):
                     print(f"JSON Decode Error: {e}")
 
             else:
-                print("Error while calling API")
+                try:
+                    error_msg = response.json().get("error", "Error while calling API")
+                except Exception:
+                    error_msg = "Error while calling API"
+                
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText(error_msg)
+                msg.setWindowTitle("Lỗi API")
+                msg.exec_()
 
         except requests.exceptions.RequestException as e:
             print(f"Error while calling API: {e}")
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText(f"Không thể kết nối API: {e}")
+            msg.setWindowTitle("Lỗi Kết Nối")
+            msg.exec_()
 
     def call_api_decrypt(self):
+        # Validate input first
+        if not self.ui.validate_decrypt():
+            return
+            
         url = "http://127.0.0.1:5000/api/railfence/decrypt"
 
         payload = {
@@ -80,10 +104,24 @@ class MyApp(QMainWindow):
                     print(f"JSON Decode Error: {e}")
 
             else:
-                print("Error while calling API")
+                try:
+                    error_msg = response.json().get("error", "Error while calling API")
+                except Exception:
+                    error_msg = "Error while calling API"
+                
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText(error_msg)
+                msg.setWindowTitle("Lỗi API")
+                msg.exec_()
 
         except requests.exceptions.RequestException as e:
             print(f"Error while calling API: {e}")
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText(f"Không thể kết nối API: {e}")
+            msg.setWindowTitle("Lỗi Kết Nối")
+            msg.exec_()
 
 
 if __name__ == "__main__":

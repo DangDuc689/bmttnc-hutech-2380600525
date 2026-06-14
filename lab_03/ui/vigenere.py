@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 
 class Ui_MainWindow(object):
@@ -68,6 +69,88 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
+        # Add validation
+        self._setup_validators()
+    
+    def _setup_validators(self):
+        """Setup validators for input fields - show warning on invalid input"""
+        # Store reference to parent window for QMessageBox
+        self.parent_window = None
+    
+    def set_parent_window(self, parent_window):
+        """Set parent window reference for showing message boxes"""
+        self.parent_window = parent_window
+    
+    def validate_encrypt(self):
+        """Validate inputs for encryption"""
+        plain_text = self.txt_plainText.toPlainText().strip()
+        key_text = self.txt_key.toPlainText().strip()
+        
+        # Check if plain text is empty
+        if not plain_text:
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Vui lòng nhập Plain Text!")
+            self.txt_plainText.setFocus()
+            return False
+        
+        # Check plain text format
+        if not all(c.isalnum() for c in plain_text):
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Plain Text chỉ được chứa chữ cái (A-Z, a-z) và chữ số, không có khoảng trắng!")
+            self.txt_plainText.setFocus()
+            return False
+        
+        # Check if key is empty
+        if not key_text:
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Vui lòng nhập Key!")
+            self.txt_key.setFocus()
+            return False
+        
+        # Check key format
+        if not all(c.isalpha() for c in key_text):
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Key chỉ được chứa chữ cái (A-Z, a-z)!")
+            self.txt_key.setFocus()
+            return False
+        
+        return True
+    
+    def validate_decrypt(self):
+        """Validate inputs for decryption"""
+        cipher_text = self.txt_cipherText.toPlainText().strip()
+        key_text = self.txt_key.toPlainText().strip()
+        
+        # Check if cipher text is empty
+        if not cipher_text:
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Vui lòng nhập Cipher Text!")
+            self.txt_cipherText.setFocus()
+            return False
+        
+        # Check cipher text format
+        if not all(c.isalnum() for c in cipher_text):
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Cipher Text chỉ được chứa chữ cái (A-Z, a-z) và chữ số, không có khoảng trắng!")
+            self.txt_cipherText.setFocus()
+            return False
+        
+        # Check if key is empty
+        if not key_text:
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Vui lòng nhập Key!")
+            self.txt_key.setFocus()
+            return False
+        
+        # Check key format
+        if not all(c.isalpha() for c in key_text):
+            QMessageBox.warning(self.parent_window, "Lỗi Nhập Liệu", 
+                              "Key chỉ được chứa chữ cái (A-Z, a-z)!")
+            self.txt_key.setFocus()
+            return False
+        
+        return True
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

@@ -8,6 +8,8 @@ class MyApp(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        # Set parent window for message boxes
+        self.ui.set_parent_window(self)
 
         self.ui.btn_encrypt.clicked.connect(self.call_api_encrypt)
         self.ui.btn_decrypt.clicked.connect(self.call_api_decrypt)
@@ -36,6 +38,10 @@ class MyApp(QMainWindow):
         return "\n".join(matrix_lines)
 
     def call_api_encrypt(self):
+        # Validate input first
+        if not self.ui.validate_encrypt():
+            return
+            
         url = "http://127.0.0.1:5000/api/playfair/encrypt"
         key_value = self.ui.txt_key.toPlainText().strip()
 
@@ -73,6 +79,10 @@ class MyApp(QMainWindow):
             QMessageBox.critical(self, "Error", str(e))
 
     def call_api_decrypt(self):
+        # Validate input first
+        if not self.ui.validate_decrypt():
+            return
+            
         url = "http://127.0.0.1:5000/api/playfair/decrypt"
         key_value = self.ui.txt_key.toPlainText().strip()
 

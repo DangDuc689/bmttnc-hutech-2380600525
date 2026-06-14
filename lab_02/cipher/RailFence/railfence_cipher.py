@@ -3,6 +3,10 @@ class RailFenceCipher:
         pass
 
     def rail_fence_encrypt(self, plain_text, num_rails):
+        # Special-case: with 1 (or fewer) rails, the ciphertext is the same as plaintext
+        if num_rails <= 1:
+            return plain_text
+
         rails = [[] for _ in range(num_rails)]
         rail_index = 0
         direction = 1  # 1: xuống, -1: lên
@@ -19,6 +23,10 @@ class RailFenceCipher:
         return cipher_text
 
     def rail_fence_decrypt(self, cipher_text, num_rails):
+        # Special-case: with 1 (or fewer) rails, the plaintext is the same as ciphertext
+        if num_rails <= 1:
+            return cipher_text
+
         rail_lengths = [0] * num_rails
         rail_index = 0
         direction = 1

@@ -12,8 +12,8 @@ caesar_cipher = CaesarCipher()
 def caesar_encrypt():
     data = request.json
     plain_text = data.get('plain_text', '')
-    if not plain_text or not isinstance(plain_text, str) or not any(char.isalpha() for char in plain_text):
-        return jsonify({'error': 'Bản rõ (plain_text) của Caesar phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not plain_text or not isinstance(plain_text, str) or not plain_text.isalnum():
+        return jsonify({'error': 'Bản rõ (plain_text) của Caesar phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     try:
         key = int(data['key'])
     except (ValueError, TypeError):
@@ -27,8 +27,8 @@ def caesar_encrypt():
 def caesar_decrypt():
     data = request.json
     cipher_text = data.get('cipher_text', '')
-    if not cipher_text or not isinstance(cipher_text, str) or not any(char.isalpha() for char in cipher_text):
-        return jsonify({'error': 'Bản mã (cipher_text) của Caesar phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not cipher_text or not isinstance(cipher_text, str) or not cipher_text.isalnum():
+        return jsonify({'error': 'Bản mã (cipher_text) của Caesar phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     try:
         key = int(data['key'])
     except (ValueError, TypeError):
@@ -47,8 +47,8 @@ def vigenere_encrypt():
     data = request.json
     plain_text = data.get('plain_text', '')
     key = data.get('key', '')
-    if not plain_text or not isinstance(plain_text, str) or not any(char.isalpha() for char in plain_text):
-        return jsonify({'error': 'Bản rõ (plain_text) của Vigenere phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not plain_text or not isinstance(plain_text, str) or not plain_text.isalnum():
+        return jsonify({'error': 'Bản rõ (plain_text) của Vigenere phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     if not key or not key.isalpha():
         return jsonify({'error': 'Khóa Vigenere phải là chuỗi chỉ chứa chữ cái và không được để trống.'}), 400
     return jsonify({'encrypted_text': vigenere_cipher.encrypt_text(plain_text, key)})
@@ -58,8 +58,8 @@ def vigenere_decrypt():
     data = request.json
     cipher_text = data.get('cipher_text', '')
     key = data.get('key', '')
-    if not cipher_text or not isinstance(cipher_text, str) or not any(char.isalpha() for char in cipher_text):
-        return jsonify({'error': 'Bản mã (cipher_text) của Vigenere phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not cipher_text or not isinstance(cipher_text, str) or not cipher_text.isalnum():
+        return jsonify({'error': 'Bản mã (cipher_text) của Vigenere phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     if not key or not key.isalpha():
         return jsonify({'error': 'Khóa Vigenere phải là chuỗi chỉ chứa chữ cái và không được để trống.'}), 400
     return jsonify({'decrypted_text': vigenere_cipher.decrypt_text(cipher_text, key)})
@@ -72,8 +72,8 @@ railfence_cipher = RailFenceCipher()
 def railfence_encrypt():
     data = request.json
     plain_text = data.get('plain_text', '')
-    if not plain_text or not isinstance(plain_text, str) or not any(char.isalpha() for char in plain_text):
-        return jsonify({'error': 'Bản rõ (plain_text) của RailFence phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not plain_text or not isinstance(plain_text, str) or not plain_text.isalnum():
+        return jsonify({'error': 'Bản rõ (plain_text) của RailFence phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     try:
         key = int(data['key'])
     except (ValueError, TypeError):
@@ -88,8 +88,8 @@ def railfence_encrypt():
 def railfence_decrypt():
     data = request.json
     cipher_text = data.get('cipher_text', '')
-    if not cipher_text or not isinstance(cipher_text, str) or not any(char.isalpha() for char in cipher_text):
-        return jsonify({'error': 'Bản mã (cipher_text) của RailFence phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not cipher_text or not isinstance(cipher_text, str) or not cipher_text.isalnum():
+        return jsonify({'error': 'Bản mã (cipher_text) của RailFence phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     try:
         key = int(data['key'])
     except (ValueError, TypeError):
@@ -108,8 +108,8 @@ playfair_cipher = PlayFairCipher()
 def playfair_creatematrix():
     data = request.json
     key = data.get('key', '')
-    if not key or not isinstance(key, str) or not any(char.isalpha() for char in key):
-        return jsonify({'error': 'Khóa Playfair phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not key or not isinstance(key, str) or not key.isalnum():
+        return jsonify({'error': 'Khóa Playfair phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     playfair_matrix = playfair_cipher.create_playfair_matrix(key)
     return jsonify({"playfair_matrix": playfair_matrix})
 
@@ -118,10 +118,10 @@ def playfair_encrypt():
     data = request.json
     plain_text = data.get('plain_text', '')
     key = data.get('key', '')
-    if not key or not isinstance(key, str) or not any(char.isalpha() for char in key):
-        return jsonify({'error': 'Khóa Playfair phải chứa ít nhất một chữ cái và không được để trống.'}), 400
-    if not plain_text or not isinstance(plain_text, str) or not any(char.isalpha() for char in plain_text):
-        return jsonify({'error': 'Bản rõ (plain_text) của Playfair phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not key or not isinstance(key, str) or not key.isalnum():
+        return jsonify({'error': 'Khóa Playfair phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
+    if not plain_text or not isinstance(plain_text, str) or not plain_text.isalnum():
+        return jsonify({'error': 'Bản rõ (plain_text) của Playfair phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     playfair_matrix = playfair_cipher.create_playfair_matrix(key)
     return jsonify({'encrypted_text': playfair_cipher.playfair_encrypt(plain_text, playfair_matrix)})
 
@@ -130,10 +130,10 @@ def playfair_decrypt():
     data = request.json
     cipher_text = data.get('cipher_text', '')
     key = data.get('key', '')
-    if not key or not isinstance(key, str) or not any(char.isalpha() for char in key):
-        return jsonify({'error': 'Khóa Playfair phải chứa ít nhất một chữ cái và không được để trống.'}), 400
-    if not cipher_text or not isinstance(cipher_text, str) or not any(char.isalpha() for char in cipher_text):
-        return jsonify({'error': 'Bản mã (cipher_text) của Playfair phải chứa ít nhất một chữ cái và không được để trống.'}), 400
+    if not key or not isinstance(key, str) or not key.isalnum():
+        return jsonify({'error': 'Khóa Playfair phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
+    if not cipher_text or not isinstance(cipher_text, str) or not cipher_text.isalnum():
+        return jsonify({'error': 'Bản mã (cipher_text) của Playfair phải chỉ chứa chữ cái và chữ số, không có khoảng trắng và không được để trống.'}), 400
     playfair_matrix = playfair_cipher.create_playfair_matrix(key)
     return jsonify({'decrypted_text': playfair_cipher.playfair_decrypt(cipher_text, playfair_matrix)})
 

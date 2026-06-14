@@ -60,11 +60,11 @@ def playfair():
     return render_template('playfair.html')
 @app.route('/api/playfair/creatematrix', methods=['POST'])
 def playfair_creatematrix():
-        data = request.json  
-        key = data.get('key', '') 
-        playfair_cipher = PlayFairCipher()
-        playfair_matrix = playfair_cipher.create_playfair_matrix(key) 
-        return jsonify({"playfair_matrix": playfair_matrix})
+    data = request.json  
+    key = data.get('key', '') 
+    playfair_cipher = PlayFairCipher()
+    playfair_matrix = playfair_cipher.create_playfair_matrix(key) 
+    return jsonify({"playfair_matrix": playfair_matrix})
 
 @app.route("/playfair/encrypt", methods=['POST'])
 def playfair_encrypt():

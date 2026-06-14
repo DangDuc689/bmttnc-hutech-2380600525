@@ -21,11 +21,13 @@
                     <form method="POST" action="railfence/encrypt">
                         <div class="mb-3">
                             <label class="form-label">Plain text:</label>
-                            <input type="text" class="form-control" name="inputPlainText" placeholder="Input Plain Text" required autofocus>
+                            <input type="text" class="form-control" name="inputPlainText" placeholder="Input Plain Text" 
+                                   required autofocus pattern="[A-Za-z0-9]+" title="Bản rõ chỉ được chứa chữ cái và chữ số, không khoảng trắng">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Key:</label>
-                            <input type="number" class="form-control" name="inputKeyPlain" placeholder="Input Key" required>
+                            <input type="text" class="form-control" name="inputKeyPlain" placeholder="Input Key" 
+                                   required pattern="\d+" title="Khóa phải là số nguyên từ 2 trở lên">
                         </div>
                         <button type="submit" class="btn btn-primary">Encrypt</button>
                     </form>
@@ -41,11 +43,13 @@
                     <form method="POST" action="railfence/decrypt">
                         <div class="mb-3">
                             <label class="form-label">Cipher text:</label>
-                            <input type="text" class="form-control" name="inputCipherText" placeholder="Input Cipher Text" required>
+                            <input type="text" class="form-control" name="inputCipherText" placeholder="Input Cipher Text" 
+                                   required pattern="[A-Za-z0-9]+" title="Bản mã chỉ được chứa chữ cái và chữ số, không khoảng trắng">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Key:</label>
-                            <input type="number" class="form-control" name="inputKeyCipher" placeholder="Input Key" required>
+                            <input type="text" class="form-control" name="inputKeyCipher" placeholder="Input Key" 
+                                   required pattern="\d+" title="Khóa phải là số nguyên từ 2 trở lên">
                         </div>
                         <button type="submit" class="btn btn-primary">Decrypt</button>
                     </form>
@@ -53,5 +57,52 @@
             </tr>
         </table>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const encryptForm = document.querySelector('form[action="railfence/encrypt"]');
+            const decryptForm = document.querySelector('form[action="railfence/decrypt"]');
+            
+            function validateKey(textInput, keyInput){
+                const text = textInput.value.replace(/\s+/g, '');
+                const keyStr = keyInput.value.trim();
+                const key = parseInt(keyStr) || 0;
+                
+                // Check: key must be number and >= 2
+                if (!keyStr.match(/^\d+$/)) {
+                    keyInput.setCustomValidity('Khóa phải là số nguyên từ 2 trở lên');
+                } else if (key < 2) {
+                    keyInput.setCustomValidity('Khóa phải là số nguyên từ 2 trở lên');
+                } else if (key >= text.length && text.length > 0){
+                    keyInput.setCustomValidity('Khóa phải nhỏ hơn độ dài của bản rõ / bản mã');
+                } else {
+                    keyInput.setCustomValidity('');
+                }
+            }
+            
+            if (encryptForm){
+                const plainTextInput = encryptForm.elements['inputPlainText'];
+                const keyInput = encryptForm.elements['inputKeyPlain'];
+                plainTextInput.addEventListener('input', () => validateKey(plainTextInput, keyInput));
+                keyInput.addEventListener('input', () => validateKey(plainTextInput, keyInput));
+                encryptForm.addEventListener('submit', (e) => {
+                    if (keyInput.validity.customError){
+                        e.preventDefault();
+                    }
+                });
+            }
+            
+            if (decryptForm){
+                const cipherTextInput = decryptForm.elements['inputCipherText'];
+                const keyInput = decryptForm.elements['inputKeyCipher'];
+                cipherTextInput.addEventListener('input', () => validateKey(cipherTextInput, keyInput));
+                keyInput.addEventListener('input', () => validateKey(cipherTextInput, keyInput));
+                decryptForm.addEventListener('submit', (e) => {
+                    if (keyInput.validity.customError){
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
